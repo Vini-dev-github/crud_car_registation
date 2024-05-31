@@ -1,10 +1,20 @@
 from django.shortcuts import render, redirect
 from app_registration.forms import CarsForm
 from app_registration.models import Cars
+from django.core.paginator import Paginator
 
 def home(request):
     data = {}
-    data['db'] = Cars.objects.all()
+    search = request.GET.get('search') #ainda está sendoimplementado a busca
+    if search:
+        data['db'] = Cars.objects.filter(modelo__icontains=search)
+    else:
+        data['db'] = Cars.objects.all()
+    #data['db'] = Cars.objects.all()
+    '''all = Cars.objects.all() #Está sendo implementado a paginação
+    paginator = Paginator(all, 10)
+    pages = request.GET.get('page')
+    data['db'] = paginator.get_page(pages)'''
     return render(request, 'index.html', data)
 
 def form(request):
